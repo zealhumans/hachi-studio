@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hachi Studio — La página web de tu negocio de mascotas, lista en 48 horas</title>
+  <meta name="description" content="Hacemos la página web de tu negocio de mascotas en Colombia en 48 horas. Panel para actualizarla tú mismo. Conectada con Hachi para que tus clientes agenden citas. Desde $500.000 COP." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Fraunces', 'Georgia', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            cielo:  '#7CCFF8',
+            arena:  '#EDD9B4',
+            crema:  '#FAF7EF',
+            cobre:  '#C4A882',
+            carbon: '#1C2235',
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    /* ── Brand tokens ────────────────────────────── */
+    :root {
+      --cielo:  #7CCFF8;
+      --arena:  #EDD9B4;
+      --crema:  #FAF7EF;
+      --cobre:  #C4A882;
+      --carbon: #1C2235;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--crema); color: var(--carbon); }
+
+    /* ── Logo toe-pad pulse (brand spec: L→R, 0.3s stagger) ── */
+    @keyframes toePulse {
+      0%, 100% { opacity: .25; }
+      50%       { opacity: 1; }
+    }
+    .toe-1 { animation: toePulse 2s ease-in-out infinite 0.0s; }
+    .toe-2 { animation: toePulse 2s ease-in-out infinite 0.3s; }
+    .toe-3 { animation: toePulse 2s ease-in-out infinite 0.6s; }
+    .toe-4 { animation: toePulse 2s ease-in-out infinite 0.9s; }
+
+    /* ── Floating paw prints hero ───────────────── */
+    @keyframes floatPaw {
+      0%   { transform: translateY(0)     rotate(var(--rot))              scale(1);   opacity: 0; }
+      8%   { opacity: var(--op, .12); }
+      88%  { opacity: var(--op, .12); }
+      100% { transform: translateY(-105vh) rotate(calc(var(--rot) + 25deg)) scale(.8); opacity: 0; }
+    }
+    .paw-float {
+      position: absolute;
+      bottom: -60px;
+      font-size: var(--sz, 28px);
+      animation: floatPaw var(--dur, 14s) ease-in-out infinite var(--delay, 0s);
+      pointer-events: none; user-select: none; will-change: transform;
+    }
+
+    /* ── Infinite ticker ────────────────────────── */
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .ticker-track { animation: ticker 22s linear infinite; display: flex; width: max-content; }
+    .ticker-track:hover { animation-play-state: paused; }
+
+    /* ── Scroll reveal ──────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+    .reveal-delay-4 { transition-delay: .4s; }
+
+    /* ── Rotating biz type ─────────────────────── */
+    .biz-rotate-wrapper { position: relative; display: inline-block; min-width: 220px; }
+    .biz-slot {
+      position: absolute; left: 0; right: 0;
+      opacity: 0; transition: opacity .45s ease;
+      color: var(--cielo); font-style: italic;
+    }
+    .biz-slot.active { opacity: 1; position: relative; }
+
+    /* ── CTA pulse ──────────────────────────────── */
+    @keyframes ctaPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(124,207,248,.35); }
+      60%       { box-shadow: 0 0 0 14px rgba(124,207,248,0); }
+    }
+    .cta-pulse { animation: ctaPulse 2.8s ease-out infinite; }
+
+    /* ── FAQ details ────────────────────────────── */
+    details summary { list-style: none; cursor: pointer; }
+    details summary::-webkit-details-marker { display: none; }
+    .faq-arrow { transition: transform .22s; }
+    details[open] .faq-arrow { transform: rotate(180deg); }
+
+    /* ── Form steps ─────────────────────────────── */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .biz-option input { display: none; }
+    .biz-option label {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 5px; padding: 12px 8px; border-radius: 14px;
+      border: 2px solid var(--cobre); background: var(--crema);
+      cursor: pointer; transition: all .15s;
+      font-family: 'Inter', sans-serif; font-weight: 600;
+      font-size: 13px; text-align: center; color: var(--carbon);
+    }
+    .biz-option input:checked + label { border-color: var(--cielo); background: rgba(124,207,248,.12); }
+    .biz-option label:hover { border-color: var(--cielo); }
+
+    .tpl-option input { display: none; }
+    .tpl-option label {
+      display: block; border-radius: 14px; overflow: hidden;
+      border: 3px solid var(--cobre); cursor: pointer; transition: all .15s;
+    }
+    .tpl-option input:checked + label { border-color: var(--cielo); }
+
+    .progress-fill { transition: width .4s ease; }
+
+    /* ── Hero collage mobile ───────────────────── */
+    @media (max-width: 640px) {
+      .collage-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
+    /* ── Cards lift ─────────────────────────────── */
+    .lift { transition: transform .2s ease, box-shadow .2s ease; }
+    .lift:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(28,34,53,.1); }
+
+    /* ── Emotional section quote ────────────────── */
+    .big-quote {
+      font-family: 'Fraunces', serif; font-style: italic;
+      font-size: clamp(1.5rem, 4vw, 2.5rem); line-height: 1.3;
+      color: var(--carbon);
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased">
+
+  <!-- ═══════════════════════════════════════ NAV ══ -->
+  <nav class="sticky top-0 z-50 bg-crema/95 backdrop-blur-sm border-b border-cobre/25 shadow-sm">
+    <div class="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between">
+
+      <!-- Animated Hachi logo -->
+      <div class="flex items-center gap-2.5">
+        <svg viewBox="0 0 56 58" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Calendar rings -->
+          <rect x="15" y="2" width="6" height="14" rx="3" fill="#1C2235"/>
+          <rect x="35" y="2" width="6" height="14" rx="3" fill="#1C2235"/>
+          <!-- Calendar body -->
+          <rect x="3" y="10" width="50" height="46" rx="9" fill="#1C2235"/>
+          <!-- Header bar highlight -->
+          <rect x="3" y="10" width="50" height="18" rx="9" fill="#1C2235"/>
+          <rect x="3" y="20" width="50" height="8" fill="#1C2235"/>
+          <!-- Main paw pad (static, Crema on Carbon) -->
+          <ellipse cx="28" cy="42" rx="10" ry="9" fill="#FAF7EF" opacity=".9"/>
+          <!-- 4 toe pads — pulse Cielo L→R per brand spec -->
+          <circle class="toe-1" cx="15.5" cy="30" r="4.5" fill="#7CCFF8"/>
+          <circle class="toe-2" cx="23"   cy="26" r="4"   fill="#7CCFF8"/>
+          <circle class="toe-3" cx="33"   cy="26" r="4"   fill="#7CCFF8"/>
+          <circle class="toe-4" cx="40.5" cy="30" r="4.5" fill="#7CCFF8"/>
+        </svg>
+        <span class="font-serif font-700 text-xl text-carbon tracking-tight">hachi studio</span>
+      </div>
+
+      <a href="#empieza"
+         class="bg-cielo hover:bg-[#5BBDE8] text-carbon font-700 text-sm px-5 py-2.5 rounded-full transition-colors shadow-sm">
+        Quiero mi web →
+      </a>
+    </div>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════ HERO ══ -->
+  <section class="relative overflow-hidden pt-20 pb-24 px-5 min-h-[90vh] flex items-center" style="background: var(--crema);">
+
+    <!-- Photo collage background (semi-transparent) -->
+    <div class="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+      <div class="collage-grid" style="display:grid; grid-template-columns:repeat(4,1fr); height:100%;">
+        <!-- Dog grooming -->
+        <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=400&h=600&q=80"
+             alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager"
+             onerror="this.style.background='#EDD9B4'" />
+        <!-- Vet examining dog -->
+        <img src="https://images.unsplash.com/photo-1559839914-17aae19cec71?auto=format&fit=crop&w=400&h=600&q=80"
+             alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager"
+             onerror="this.style.background='#C4A882'" />
+        <!-- Dog trainer / dogs playing -->
+        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=400&h=600&q=80"
+             alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager"
+             onerror="this.style.background='#EDD9B4'" />
+        <!-- Puppy portrait -->
+        <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&h=600&q=80"
+             alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager"
+             onerror="this.style.background='#C4A882'" />
+        <!-- Cat at vet -->
+        <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=400&h=600&q=80"
+             alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager"
+             onerror="this.style.background='#EDD9B4'" />
+        <!-- Dog bath -->
+        <img src="https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?auto=format&fit=crop&w=400&h=600&q=80"
+             alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager"
+             onerror="this.style.background='#C4A882'" />
+        <!-- Golden retriever -->
+        <img src="https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?auto=format&fit=crop&w=400&h=600&q=80"
+             alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager"
+             onerror="this.style.background='#EDD9B4'" />
+        <!-- Dog with vet / care -->
+        <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=400&h=600&q=80"
+             alt="" style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager"
+             onerror="this.style.background='#C4A882'" />
+      </div>
+      <div class="absolute inset-0" style="background:rgba(250,247,239,0.72);"></div>
+    </div>
+
+    <!-- Floating paw prints (pattern interrupt) -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      <span class="paw-float" style="--sz:22px; --op:.10; --rot:-15deg; --dur:13s; --delay:0s;   left:6%">🐾</span>
+      <span class="paw-float" style="--sz:32px; --op:.08; --rot:12deg;  --dur:17s; --delay:1.8s; left:18%">🐾</span>
+      <span class="paw-float" style="--sz:18px; --op:.13; --rot:-8deg;  --dur:11s; --delay:3.2s; left:33%">🐾</span>
+      <span class="paw-float" style="--sz:28px; --op:.07; --rot:20deg;  --dur:16s; --delay:0.5s; left:47%">🐾</span>
+      <span class="paw-float" style="--sz:20px; --op:.11; --rot:-22deg; --dur:14s; --delay:4.1s; left:61%">🐾</span>
+      <span class="paw-float" style="--sz:35px; --op:.06; --rot:8deg;   --dur:19s; --delay:2.4s; left:74%">🐾</span>
+      <span class="paw-float" style="--sz:16px; --op:.12; --rot:-5deg;  --dur:12s; --delay:6.0s; left:85%">🐾</span>
+      <span class="paw-float" style="--sz:24px; --op:.09; --rot:16deg;  --dur:15s; --delay:7.5s; left:93%">🐾</span>
+    </div>
+
+    <div class="relative z-10 max-w-3xl mx-auto text-center">
+
+      <!-- Scarcity + Hachi month badges -->
+      <div class="flex flex-col sm:flex-row gap-2 justify-center mb-8 reveal">
+        <span class="inline-flex items-center gap-2 bg-cielo/15 border border-cielo/40 text-carbon rounded-full px-4 py-2 text-sm font-600">
+          <span class="w-2 h-2 rounded-full bg-cielo animate-pulse inline-block"></span>
+          Solo 5 negocios al precio de lanzamiento
+        </span>
+        <span class="inline-flex items-center gap-2 bg-arena border border-cobre/40 text-carbon rounded-full px-4 py-2 text-sm font-600">
+          ⭐ Incluye 1 mes gratis de <strong>Hachi App</strong>
+        </span>
+      </div>
+
+      <!-- Main headline -->
+      <h1 class="font-serif font-700 text-carbon leading-tight mb-6 reveal reveal-delay-1"
+          style="font-size: clamp(2.2rem, 6vw, 4.2rem);">
+        La página web de tu<br />
+        <!-- Rotating business type -->
+        <span id="biz-rotate" class="biz-rotate-wrapper"></span><br />
+        lista en <em>48 horas.</em>
+      </h1>
+
+      <p class="text-carbon/60 text-lg sm:text-xl max-w-xl mx-auto mb-3 leading-relaxed reveal reveal-delay-2">
+        Sin pagar millones. Sin saber de tecnología.<br />
+        Y tus clientes podrán <strong class="text-carbon">agendar citas directamente desde tu página.</strong>
+      </p>
+      <p class="text-carbon/40 text-sm mb-10 reveal reveal-delay-2">
+        Setup: $500.000 COP · Mantenimiento: $25.000/mes
+      </p>
+
+      <!-- CTAs -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-center reveal reveal-delay-3">
+        <a href="#empieza"
+           class="cta-pulse w-full sm:w-auto bg-cielo hover:bg-[#5BBDE8] text-carbon font-700 text-lg px-9 py-4 rounded-2xl transition-colors shadow-sm text-center">
+          Empezar ahora 🐾
+        </a>
+        <a href="https://wa.me/TODO_REPLACE_WHATSAPP?text=Hola!%20Quiero%20saber%20sobre%20Hachi%20Studio"
+           target="_blank"
+           class="w-full sm:w-auto flex items-center justify-center gap-2 bg-crema border-2 border-cobre/50 hover:border-cobre text-carbon font-600 text-lg px-8 py-4 rounded-2xl transition-colors">
+          <svg class="w-5 h-5 text-green-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          Prefiero WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════ TICKER ══ -->
+  <div class="bg-carbon py-3.5 overflow-hidden select-none" aria-hidden="true">
+    <div class="ticker-track text-cielo font-600 text-sm gap-0">
+      <!-- Duplicated for seamless loop -->
+      <span class="whitespace-nowrap px-6">🐾 Clínicas veterinarias</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">✂️ Peluquerías caninas</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">🏠 Guarderías & hoteles</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">🐕 Entrenadores caninos</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">🛒 Tiendas de mascotas</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">📸 Fotografía de mascotas</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">🚗 Servicios a domicilio</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <!-- Duplicate -->
+      <span class="whitespace-nowrap px-6">🐾 Clínicas veterinarias</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">✂️ Peluquerías caninas</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">🏠 Guarderías & hoteles</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">🐕 Entrenadores caninos</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">🛒 Tiendas de mascotas</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">📸 Fotografía de mascotas</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+      <span class="whitespace-nowrap px-6">🚗 Servicios a domicilio</span>
+      <span class="whitespace-nowrap px-6 text-cobre">·</span>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════ EMOTIONAL MIRROR SECTION ══ -->
+  <section class="py-24 px-5" style="background: var(--arena);">
+    <div class="max-w-3xl mx-auto">
+
+      <!-- The mirror -->
+      <div class="text-center mb-16 reveal">
+        <p class="big-quote mb-6">
+          "Tú cuidas a sus peludos cada día.<br />
+          Nosotros cuidamos tu negocio."
+        </p>
+        <p class="text-carbon/65 text-lg leading-relaxed max-w-xl mx-auto">
+          Para nosotros, las mascotas no son solo animales — son familia.
+          Y quien dedica su vida a cuidarlas merece herramientas que estén a su altura.
+        </p>
+      </div>
+
+      <!-- Hachikō story callout -->
+      <div class="bg-crema rounded-2xl p-7 sm:p-9 border border-cobre/30 reveal">
+        <div class="flex gap-4 items-start">
+          <div class="text-4xl shrink-0 mt-1">🐕</div>
+          <div>
+            <p class="font-serif font-600 text-carbon text-lg mb-3">¿Por qué Hachi?</p>
+            <p class="text-carbon/65 leading-relaxed mb-3">
+              Hachi viene de <em>Hachikō</em>, el Akita japonés que esperó a su dueño
+              en la estación de tren cada día por casi <strong class="text-carbon">10 años</strong> —
+              incluso después de que él falleció.
+            </p>
+            <p class="text-carbon/65 leading-relaxed mb-3">
+              Lealtad. Amor sin condiciones. Devoción sin pedir nada a cambio.
+              Eso es lo que tu peludo te da cada mañana cuando llegas a tu negocio.
+            </p>
+            <p class="text-carbon font-600">
+              Nosotros llevamos ese nombre porque entendemos lo que representan
+              las mascotas para quienes las cuidan. Por eso existimos.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Brand values row -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
+        <div class="text-center p-4 bg-crema rounded-xl border border-cobre/20 reveal reveal-delay-1">
+          <p class="text-2xl mb-1">☀️</p>
+          <p class="font-serif font-600 text-carbon text-sm">Calidez</p>
+        </div>
+        <div class="text-center p-4 bg-crema rounded-xl border border-cobre/20 reveal reveal-delay-2">
+          <p class="text-2xl mb-1">🤝</p>
+          <p class="font-serif font-600 text-carbon text-sm">Confianza</p>
+        </div>
+        <div class="text-center p-4 bg-crema rounded-xl border border-cobre/20 reveal reveal-delay-3">
+          <p class="text-2xl mb-1">🏘️</p>
+          <p class="font-serif font-600 text-carbon text-sm">Comunidad</p>
+        </div>
+        <div class="text-center p-4 bg-crema rounded-xl border border-cobre/20 reveal reveal-delay-4">
+          <p class="text-2xl mb-1">💛</p>
+          <p class="font-serif font-600 text-carbon text-sm">Alegría</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════ PAIN ══ -->
+  <section class="py-20 px-5" style="background: var(--crema);">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-carbon/40 text-xs font-700 uppercase tracking-widest text-center mb-10 reveal">
+        ¿Te suena familiar?
+      </p>
+      <div class="space-y-4">
+        <div class="bg-arena rounded-2xl p-6 flex gap-4 items-start border border-cobre/25 lift reveal">
+          <span class="text-3xl leading-none shrink-0">😓</span>
+          <p class="text-carbon/75 text-lg leading-relaxed">
+            Dueños de mascotas te buscan en Google esta semana y
+            <strong class="text-carbon">no te encuentran</strong> — se van con quien sí aparece.
+          </p>
+        </div>
+        <div class="bg-arena rounded-2xl p-6 flex gap-4 items-start border border-cobre/25 lift reveal reveal-delay-1">
+          <span class="text-3xl leading-none shrink-0">💸</span>
+          <p class="text-carbon/75 text-lg leading-relaxed">
+            Quisiste cambiar un precio o subir una foto nueva y
+            <strong class="text-carbon">tuviste que pagarle a alguien</strong> — o simplemente no lo hiciste.
+          </p>
+        </div>
+        <div class="bg-arena rounded-2xl p-6 flex gap-4 items-start border border-cobre/25 lift reveal reveal-delay-2">
+          <span class="text-3xl leading-none shrink-0">⏰</span>
+          <p class="text-carbon/75 text-lg leading-relaxed">
+            Llevas meses pensando en tener una página que
+            <strong class="text-carbon">realmente represente lo que eres</strong>... y sigue siendo solo un pensamiento.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════ DIFFERENCE ══ -->
+  <section class="py-20 px-5" style="background: var(--arena);">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-14 reveal">
+        <p class="text-carbon/40 text-xs font-700 uppercase tracking-widest mb-3">Por qué Hachi Studio</p>
+        <h2 class="font-serif font-700 text-carbon leading-tight mb-3" style="font-size: clamp(1.8rem, 4vw, 2.8rem);">
+          No es una agencia. No es Wix.<br />No es un freelancer que desaparece.
+        </h2>
+        <p class="text-carbon/55 text-lg max-w-lg mx-auto">
+          Es un servicio hecho específicamente para negocios de mascotas en Colombia.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div class="bg-crema rounded-2xl p-6 border border-cobre/25 lift reveal">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl mb-4" style="background: rgba(124,207,248,.2);">⚡</div>
+          <h3 class="font-serif font-600 text-carbon text-lg mb-2">En 48 horas, no semanas</h3>
+          <p class="text-carbon/60 leading-relaxed">Nos envías tu logo, fotos y servicios por WhatsApp. En 48 horas tu página está viva en internet.</p>
+        </div>
+        <div class="bg-crema rounded-2xl p-6 border border-cobre/25 lift reveal reveal-delay-1">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl mb-4" style="background: rgba(124,207,248,.2);">📱</div>
+          <h3 class="font-serif font-600 text-carbon text-lg mb-2">Tú mismo actualizas todo</h3>
+          <p class="text-carbon/60 leading-relaxed">Panel simple. Cambias fotos, precios y servicios desde tu celular en segundos. Sin depender de nadie.</p>
+        </div>
+        <div class="bg-crema rounded-2xl p-6 border border-cobre/25 lift reveal reveal-delay-2">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl mb-4" style="background: rgba(124,207,248,.2);">📅</div>
+          <h3 class="font-serif font-600 text-carbon text-lg mb-2">Tus clientes agendan solos</h3>
+          <p class="text-carbon/60 leading-relaxed">Tu web va conectada con Hachi. Tus clientes agendan citas directamente — tú las ves en tu calendario.</p>
+        </div>
+        <div class="bg-crema rounded-2xl p-6 border border-cobre/25 lift reveal reveal-delay-3">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl mb-4" style="background: rgba(124,207,248,.2);">☕</div>
+          <h3 class="font-serif font-600 text-carbon text-lg mb-2">$25.000/mes de mantenimiento</h3>
+          <p class="text-carbon/60 leading-relaxed">Tan barato que nunca tiene sentido cancelar. Tu presencia online siempre activa y actualizada.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════ CASO DE ÉXITO ══ -->
+  <section class="py-20 px-5" style="background: var(--crema);">
+    <div class="max-w-4xl mx-auto">
+
+      <div class="text-center mb-12 reveal">
+        <p class="text-carbon/40 text-xs font-700 uppercase tracking-widest mb-3">Caso de éxito</p>
+        <h2 class="font-serif font-700 text-carbon leading-tight mb-3" style="font-size: clamp(1.8rem, 4vw, 2.8rem);">
+          Ya lo hicimos.<br /><em>Esto es lo que tu negocio puede tener.</em>
+        </h2>
+        <p class="text-carbon/55 text-lg max-w-lg mx-auto">
+          Antes de lanzar Hachi Studio construimos la plataforma completa para
+          una fundación real de rescate animal en Colombia.
+        </p>
+      </div>
+
+      <!-- Main case study card -->
+      <div class="bg-arena rounded-3xl border border-cobre/30 overflow-hidden reveal">
+
+        <!-- Browser chrome mockup -->
+        <div class="bg-carbon px-5 py-3 flex items-center gap-2.5">
+          <div class="flex gap-1.5">
+            <div class="w-3 h-3 rounded-full bg-red-400/70"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-400/70"></div>
+            <div class="w-3 h-3 rounded-full bg-green-400/70"></div>
+          </div>
+          <div class="flex-1 bg-carbon/60 border border-crema/10 rounded-lg px-3 py-1.5 text-xs text-cielo/80 font-mono">
+            patitasdelaprotesta.hachi.pet
+          </div>
+        </div>
+
+        <!-- "Screenshot" — styled mockup of the site -->
+        <div class="relative overflow-hidden" style="background: linear-gradient(160deg, #2d1a0e 0%, #4a2c1a 50%, #1a1a2e 100%); min-height: 220px;">
+          <!-- Decorative paws -->
+          <div class="absolute inset-0 pointer-events-none select-none opacity-10 text-8xl flex items-center justify-around pt-8" aria-hidden="true">
+            <span>🐾</span><span>🐈</span><span>🐕</span><span>🐾</span>
+          </div>
+          <!-- Mock site content -->
+          <div class="relative z-10 px-8 pt-10 pb-8">
+            <p class="font-serif font-700 text-amber-100 text-2xl sm:text-3xl mb-2 leading-tight">
+              Patitas de la Protesta
+            </p>
+            <p class="text-amber-200/60 text-sm mb-6">Fundación de rescate animal · Colombia</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="bg-amber-100/15 border border-amber-100/25 text-amber-100/80 rounded-full px-3 py-1 text-xs">🐾 Adopciones</span>
+              <span class="bg-amber-100/15 border border-amber-100/25 text-amber-100/80 rounded-full px-3 py-1 text-xs">🏡 Hogares de paso</span>
+              <span class="bg-amber-100/15 border border-amber-100/25 text-amber-100/80 rounded-full px-3 py-1 text-xs">📅 Jornadas de adopción</span>
+              <span class="bg-amber-100/15 border border-amber-100/25 text-amber-100/80 rounded-full px-3 py-1 text-xs">💛 Rescatados</span>
+              <span class="bg-amber-100/15 border border-amber-100/25 text-amber-100/80 rounded-full px-3 py-1 text-xs">🌐 ES / EN</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="p-7 sm:p-9">
+          <div class="grid sm:grid-cols-2 gap-8">
+            <!-- What was built -->
+            <div>
+              <p class="font-serif font-600 text-carbon text-base mb-4">Lo que construimos para ellos</p>
+              <ul class="space-y-2.5">
+                <li class="flex items-start gap-2.5 text-carbon/65 text-sm">
+                  <span class="text-cielo mt-0.5 shrink-0">✓</span>
+                  Página principal con galería de animales en adopción
+                </li>
+                <li class="flex items-start gap-2.5 text-carbon/65 text-sm">
+                  <span class="text-cielo mt-0.5 shrink-0">✓</span>
+                  Red de hogares de paso — perfiles públicos de cuidadores
+                </li>
+                <li class="flex items-start gap-2.5 text-carbon/65 text-sm">
+                  <span class="text-cielo mt-0.5 shrink-0">✓</span>
+                  Historias de rescate con fotos antes/después
+                </li>
+                <li class="flex items-start gap-2.5 text-carbon/65 text-sm">
+                  <span class="text-cielo mt-0.5 shrink-0">✓</span>
+                  Jornadas de adopción con fecha, lugar y registro
+                </li>
+                <li class="flex items-start gap-2.5 text-carbon/65 text-sm">
+                  <span class="text-cielo mt-0.5 shrink-0">✓</span>
+                  Panel de administración completo — actualizan todo solos
+                </li>
+                <li class="flex items-start gap-2.5 text-carbon/65 text-sm">
+                  <span class="text-cielo mt-0.5 shrink-0">✓</span>
+                  Bilinguismo ES / EN — llegan a más adoptantes
+                </li>
+              </ul>
+            </div>
+
+            <!-- Results / framing -->
+            <div>
+              <p class="font-serif font-600 text-carbon text-base mb-4">Qué dicen de ello</p>
+              <div class="bg-crema rounded-2xl p-5 border border-cobre/25 mb-4">
+                <p class="text-carbon/70 text-sm leading-relaxed italic mb-3">
+                  "Antes posteábamos en Instagram y esperábamos. Ahora tenemos una
+                  plataforma real donde la gente puede ver los animales, aplicar
+                  para adoptar y donar — todo desde un mismo lugar."
+                </p>
+                <p class="text-carbon/50 text-xs font-600">— Fundación Patitas de la Protesta</p>
+              </div>
+              <div class="flex gap-3">
+                <div class="flex-1 bg-crema rounded-xl p-4 border border-cobre/25 text-center">
+                  <p class="font-serif font-700 text-carbon text-2xl">48h</p>
+                  <p class="text-carbon/50 text-xs mt-0.5">De idea a sitio en vivo</p>
+                </div>
+                <div class="flex-1 bg-crema rounded-xl p-4 border border-cobre/25 text-center">
+                  <p class="font-serif font-700 text-carbon text-2xl">100%</p>
+                  <p class="text-carbon/50 text-xs mt-0.5">Autogestión por la fundación</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom CTA strip -->
+          <div class="mt-8 pt-6 border-t border-cobre/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-carbon/55 text-sm">
+              Tu negocio de mascotas puede tener exactamente esto — y más.
+            </p>
+            <a href="#empieza"
+               class="shrink-0 bg-cielo hover:bg-[#5BBDE8] text-carbon font-700 text-sm px-6 py-2.5 rounded-xl transition-colors shadow-sm">
+              Quiero el mío →
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════ TEMPLATES ══ -->
+  <section class="py-20 px-5" style="background: var(--arena);">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12 reveal">
+        <p class="text-carbon/40 text-xs font-700 uppercase tracking-widest mb-3">Diseños disponibles</p>
+        <h2 class="font-serif font-700 text-carbon leading-tight" style="font-size: clamp(1.8rem, 4vw, 2.8rem);">
+          Elige el estilo que habla<br />por tu negocio
+        </h2>
+        <p class="text-carbon/50 text-lg mt-3">Todos incluyen el mismo panel de control. La diferencia es el estilo.</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div class="lift rounded-2xl overflow-hidden bg-white border border-cobre/30 shadow-sm reveal">
+          <div class="h-32 sm:h-36 flex flex-col items-center justify-center gap-2" style="background: linear-gradient(135deg, #f5f0e8, #e8e0d0);">
+            <span class="text-4xl">🌿</span>
+            <p class="font-serif font-600 text-stone-600 text-sm">Vitrina</p>
+          </div>
+          <div class="p-4 bg-crema">
+            <p class="font-serif font-600 text-carbon text-sm mb-1">Vitrina</p>
+            <p class="text-carbon/50 text-xs">Limpio, galería. Para fotografía y tiendas.</p>
+          </div>
+        </div>
+
+        <div class="lift rounded-2xl overflow-hidden bg-white border border-cobre/30 shadow-sm reveal reveal-delay-1">
+          <div class="h-32 sm:h-36 flex flex-col items-center justify-center gap-2" style="background: linear-gradient(135deg, #f97316, #f59e0b);">
+            <span class="text-4xl">⭐</span>
+            <p class="font-serif font-700 text-white text-sm">Estrella</p>
+          </div>
+          <div class="p-4 bg-crema">
+            <p class="font-serif font-600 text-carbon text-sm mb-1">Estrella</p>
+            <p class="text-carbon/50 text-xs">Bold, vibrante. Para entrenadores.</p>
+          </div>
+        </div>
+
+        <div class="lift rounded-2xl overflow-hidden bg-white border border-cobre/30 shadow-sm reveal reveal-delay-2">
+          <div class="h-32 sm:h-36 flex flex-col items-center justify-center gap-2" style="background: linear-gradient(135deg, #92400e, #b45309);">
+            <span class="text-4xl">🌱</span>
+            <p class="font-serif font-600 text-amber-100 text-sm">Raíces</p>
+          </div>
+          <div class="p-4 bg-crema">
+            <p class="font-serif font-600 text-carbon text-sm mb-1">Raíces</p>
+            <p class="text-carbon/50 text-xs">Cálido, orgánico. Para guarderías.</p>
+          </div>
+        </div>
+
+        <div class="lift rounded-2xl overflow-hidden bg-white border border-cobre/30 shadow-sm reveal reveal-delay-1">
+          <div class="h-32 sm:h-36 flex flex-col items-center justify-center gap-2" style="background: linear-gradient(135deg, #7CCFF8, #38bdf8);">
+            <span class="text-4xl">🏡</span>
+            <p class="font-serif font-700 text-carbon text-sm">Plaza</p>
+          </div>
+          <div class="p-4 bg-crema">
+            <p class="font-serif font-600 text-carbon text-sm mb-1">Plaza</p>
+            <p class="text-carbon/50 text-xs">Acogedor. Para clínicas veterinarias.</p>
+          </div>
+        </div>
+
+        <div class="lift rounded-2xl overflow-hidden bg-white border border-cobre/30 shadow-sm reveal reveal-delay-2">
+          <div class="h-32 sm:h-36 flex flex-col items-center justify-center gap-2" style="background: linear-gradient(135deg, #1C2235, #2d3a5c);">
+            <span class="text-4xl">💎</span>
+            <p class="font-serif font-600 text-arena text-sm">Esencia</p>
+          </div>
+          <div class="p-4 bg-crema">
+            <p class="font-serif font-600 text-carbon text-sm mb-1">Esencia</p>
+            <p class="text-carbon/50 text-xs">Premium. Para spas y grooming de lujo.</p>
+          </div>
+        </div>
+
+        <div class="lift rounded-2xl overflow-hidden bg-white border-2 border-cielo/60 shadow-sm reveal reveal-delay-3">
+          <div class="h-32 sm:h-36 flex flex-col items-center justify-center gap-2" style="background: rgba(124,207,248,.12);">
+            <p class="font-serif font-700 text-cielo text-3xl">+5</p>
+            <p class="text-carbon/50 text-xs font-600">más estilos</p>
+          </div>
+          <div class="p-4 bg-crema">
+            <p class="font-serif font-600 text-carbon text-sm mb-1">Fresco · Impulso · Barrio · Luna · Vibe</p>
+            <p class="text-carbon/50 text-xs">Pregúntanos por todos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════ OFFER STACK ══ -->
+  <section class="py-20 px-5" style="background: var(--crema);">
+    <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-10 reveal">
+        <p class="text-carbon/40 text-xs font-700 uppercase tracking-widest mb-3">Todo incluido</p>
+        <h2 class="font-serif font-700 text-carbon leading-tight" style="font-size: clamp(1.8rem, 4vw, 2.6rem);">
+          Todo lo que necesitas.<br />Nada de lo que no.
+        </h2>
+      </div>
+
+      <div class="bg-arena rounded-2xl border border-cobre/30 shadow-sm overflow-hidden reveal">
+        <div class="divide-y divide-cobre/15">
+          <div class="flex justify-between items-center px-6 py-4">
+            <div class="flex items-center gap-3"><span class="text-cielo font-700">✓</span><span class="text-carbon/80 text-sm sm:text-base">Página web lista en 48 horas</span></div>
+            <span class="text-carbon/30 text-sm whitespace-nowrap ml-4">$2.000.000</span>
+          </div>
+          <div class="flex justify-between items-center px-6 py-4">
+            <div class="flex items-center gap-3"><span class="text-cielo font-700">✓</span><span class="text-carbon/80 text-sm sm:text-base">Panel — actualizas todo desde tu celular</span></div>
+            <span class="text-carbon/30 text-sm whitespace-nowrap ml-4">$500.000</span>
+          </div>
+          <div class="flex justify-between items-center px-6 py-4">
+            <div class="flex items-center gap-3"><span class="text-cielo font-700">✓</span><span class="text-carbon/80 text-sm sm:text-base">Botón de WhatsApp integrado</span></div>
+            <span class="text-carbon/30 text-sm whitespace-nowrap ml-4">$200.000</span>
+          </div>
+          <div class="flex justify-between items-center px-6 py-4">
+            <div class="flex items-center gap-3"><span class="text-cielo font-700">✓</span><span class="text-carbon/80 text-sm sm:text-base">Google Maps integrado</span></div>
+            <span class="text-carbon/30 text-sm whitespace-nowrap ml-4">$200.000</span>
+          </div>
+          <div class="flex justify-between items-center px-6 py-4">
+            <div class="flex items-center gap-3"><span class="text-cielo font-700">✓</span><span class="text-carbon/80 text-sm sm:text-base">SEO básico — Google te encuentra</span></div>
+            <span class="text-carbon/30 text-sm whitespace-nowrap ml-4">$300.000</span>
+          </div>
+          <div class="flex justify-between items-center px-6 py-4">
+            <div class="flex items-center gap-3"><span class="text-cielo font-700">✓</span>
+              <span class="text-carbon/80 text-sm sm:text-base">Cuenta en <strong class="text-cielo">Hachi</strong> gratis — clientes agendan desde tu web</span>
+            </div>
+            <span class="text-carbon/30 text-sm whitespace-nowrap ml-4">$600.000</span>
+          </div>
+          <!-- BONO HACHI APP -->
+          <div class="flex justify-between items-center px-6 py-4" style="background: rgba(124,207,248,.08);">
+            <div class="flex items-center gap-3">
+              <span class="text-cielo font-700">★</span>
+              <div>
+                <span class="text-carbon font-600 text-sm sm:text-base">1 mes gratis de <strong class="text-cielo">Hachi App</strong></span>
+                <span class="ml-2 text-xs font-700 px-2 py-0.5 rounded-full" style="background: var(--arena); color: var(--carbon); border: 1px solid var(--cobre);">BONO</span>
+                <p class="text-carbon/45 text-xs mt-0.5">Gestiona citas, clientes y pagos desde día 1</p>
+              </div>
+            </div>
+            <span class="text-carbon/30 text-sm whitespace-nowrap ml-4">$150.000</span>
+          </div>
+          <div class="flex justify-between items-center px-6 py-4">
+            <div class="flex items-center gap-3"><span class="text-cielo font-700">✓</span><span class="text-carbon/80 text-sm sm:text-base">Soporte por WhatsApp</span></div>
+            <span class="text-carbon/30 text-sm whitespace-nowrap ml-4">$100.000</span>
+          </div>
+        </div>
+
+        <!-- Pricing footer -->
+        <div class="px-6 py-7 border-t" style="border-color: rgba(196,168,130,.3); background: var(--arena);">
+          <div class="flex justify-between mb-1">
+            <span class="text-carbon/40 text-sm">Valor total</span>
+            <span class="text-carbon/30 text-sm line-through">$4.050.000 COP</span>
+          </div>
+          <div class="flex justify-between items-end mb-2">
+            <span class="text-carbon font-700 text-lg">Setup (una sola vez)</span>
+            <span class="font-serif font-700 text-carbon" style="font-size: 2rem; color: var(--carbon);">$500.000</span>
+          </div>
+          <div class="flex justify-between mb-6">
+            <span class="text-carbon/55">Mantenimiento mensual</span>
+            <span class="text-carbon font-600">$25.000 COP/mes</span>
+          </div>
+
+          <div class="rounded-xl p-4 mb-5 text-center" style="background: rgba(124,207,248,.15); border: 1px solid rgba(124,207,248,.4);">
+            <p class="text-carbon font-600 text-sm">
+              🛡️ Garantía: Si tu página no está lista en 48 horas, te devolvemos el setup. Sin preguntas.
+            </p>
+          </div>
+
+          <a href="#empieza"
+             class="block w-full text-center font-700 text-carbon text-xl py-4 rounded-2xl transition-colors shadow-sm"
+             style="background: var(--cielo);">
+            Quiero empezar 🐾
+          </a>
+          <p class="text-carbon/35 text-xs text-center mt-3">Sin contratos. Cancelas cuando quieras.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════ HOW IT WORKS ══ -->
+  <section class="py-20 px-5" style="background: var(--arena);">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12 reveal">
+        <p class="text-carbon/40 text-xs font-700 uppercase tracking-widest mb-3">Así de simple</p>
+        <h2 class="font-serif font-700 text-carbon" style="font-size: clamp(1.8rem, 4vw, 2.6rem);">Tres pasos. Tu web lista.</h2>
+      </div>
+      <div class="space-y-8">
+        <div class="flex gap-5 items-start reveal">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 font-serif font-700 text-xl text-carbon" style="background: var(--cielo);">1</div>
+          <div class="pt-1">
+            <h3 class="font-serif font-600 text-carbon text-lg mb-1">Llenas el formulario (o nos escribes por WhatsApp)</h3>
+            <p class="text-carbon/55">Tu tipo de negocio, tu ciudad y el estilo que más te gusta. En 5 minutos está listo.</p>
+          </div>
+        </div>
+        <div class="flex gap-5 items-start reveal reveal-delay-1">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 font-serif font-700 text-xl text-carbon" style="background: var(--cielo);">2</div>
+          <div class="pt-1">
+            <h3 class="font-serif font-600 text-carbon text-lg mb-1">Nos envías logo, fotos y servicios</h3>
+            <p class="text-carbon/55">Por WhatsApp. Eso es todo. Armamos tu página, configuramos Hachi y ajustamos cada detalle.</p>
+          </div>
+        </div>
+        <div class="flex gap-5 items-start reveal reveal-delay-2">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 font-serif font-700 text-xl text-carbon" style="background: var(--cielo);">3</div>
+          <div class="pt-1">
+            <h3 class="font-serif font-600 text-carbon text-lg mb-1">En 48 horas tu página está viva</h3>
+            <p class="text-carbon/55">Te entregamos el link y acceso al panel. Actualizas lo que quieras, cuando quieras. Sin depender de nadie.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════ ONBOARDING FORM ══ -->
+  <section class="py-20 px-5" style="background: var(--carbon);" id="empieza">
+    <div class="max-w-xl mx-auto">
+      <div class="text-center mb-10 reveal">
+        <p class="text-cielo/60 text-xs font-700 uppercase tracking-widest mb-3">Empieza hoy</p>
+        <h2 class="font-serif font-700 text-white leading-tight mb-3" style="font-size: clamp(1.8rem, 4vw, 2.6rem);">
+          Tu web en 48 horas 🐾
+        </h2>
+        <p class="text-white/50">Llena los datos y te contactamos en menos de 2 horas.</p>
+      </div>
+
+      <div class="bg-crema rounded-2xl p-6 sm:p-8 shadow-sm reveal">
+
+        <!-- Progress -->
+        <div class="mb-8">
+          <div class="flex justify-between text-xs text-carbon/40 font-600 mb-2">
+            <span id="step-label">Paso 1 de 3</span>
+            <span id="step-pct">33%</span>
+          </div>
+          <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--arena);">
+            <div id="progress-bar" class="progress-fill h-full rounded-full" style="width: 33%; background: var(--cielo);"></div>
+          </div>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="step active" id="step-1">
+          <h3 class="font-serif font-600 text-carbon text-xl mb-2">¿Qué tipo de negocio tienes?</h3>
+          <p class="text-carbon/50 text-sm mb-5">Selecciona el que mejor describe tu negocio.</p>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div class="biz-option"><input type="radio" name="biz_type" id="biz-vet"     value="Clínica veterinaria" /><label for="biz-vet"><span class="text-2xl">🏥</span>Clínica veterinaria</label></div>
+            <div class="biz-option"><input type="radio" name="biz_type" id="biz-grm"     value="Peluquería / groomer" /><label for="biz-grm"><span class="text-2xl">✂️</span>Peluquería / groomer</label></div>
+            <div class="biz-option"><input type="radio" name="biz_type" id="biz-day"     value="Guardería o hotel" /><label for="biz-day"><span class="text-2xl">🏠</span>Guardería / hotel</label></div>
+            <div class="biz-option"><input type="radio" name="biz_type" id="biz-trn"     value="Entrenador canino" /><label for="biz-trn"><span class="text-2xl">🐕</span>Entrenador canino</label></div>
+            <div class="biz-option"><input type="radio" name="biz_type" id="biz-str"     value="Tienda de mascotas" /><label for="biz-str"><span class="text-2xl">🛒</span>Tienda de mascotas</label></div>
+            <div class="biz-option"><input type="radio" name="biz_type" id="biz-pho"     value="Fotografía de mascotas" /><label for="biz-pho"><span class="text-2xl">📸</span>Fotografía</label></div>
+            <div class="biz-option"><input type="radio" name="biz_type" id="biz-dom"     value="Servicios a domicilio" /><label for="biz-dom"><span class="text-2xl">🚗</span>A domicilio</label></div>
+            <div class="biz-option"><input type="radio" name="biz_type" id="biz-oth"     value="Otro" /><label for="biz-oth"><span class="text-2xl">🐾</span>Otro</label></div>
+          </div>
+          <p id="biz-error" class="text-red-500 text-sm mt-3 hidden">Selecciona el tipo de negocio para continuar.</p>
+          <button onclick="goStep(2)"
+                  class="mt-5 w-full font-700 text-carbon text-lg py-4 rounded-2xl transition-colors" style="background: var(--cielo);">
+            Siguiente →
+          </button>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step" id="step-2">
+          <h3 class="font-serif font-600 text-carbon text-xl mb-2">Cuéntanos sobre tu negocio</h3>
+          <p class="text-carbon/50 text-sm mb-5">Solo lo básico para contactarte hoy.</p>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-carbon font-600 text-sm mb-1.5">Nombre de tu negocio *</label>
+              <input id="field-name" type="text" placeholder="Ej: Clínica Veterinaria Luna"
+                     class="w-full rounded-xl px-4 py-3 text-carbon placeholder-carbon/30 focus:outline-none transition-colors text-sm"
+                     style="border: 2px solid var(--cobre); background: white;" onfocus="this.style.borderColor='var(--cielo)'" onblur="this.style.borderColor='var(--cobre)'"/>
+            </div>
+            <div>
+              <label class="block text-carbon font-600 text-sm mb-1.5">Tu ciudad *</label>
+              <input id="field-city" type="text" placeholder="Ej: Bogotá"
+                     class="w-full rounded-xl px-4 py-3 text-carbon placeholder-carbon/30 focus:outline-none transition-colors text-sm"
+                     style="border: 2px solid var(--cobre); background: white;" onfocus="this.style.borderColor='var(--cielo)'" onblur="this.style.borderColor='var(--cobre)'"/>
+            </div>
+            <div>
+              <label class="block text-carbon font-600 text-sm mb-1.5">Tu nombre *</label>
+              <input id="field-owner" type="text" placeholder="Ej: María García"
+                     class="w-full rounded-xl px-4 py-3 text-carbon placeholder-carbon/30 focus:outline-none transition-colors text-sm"
+                     style="border: 2px solid var(--cobre); background: white;" onfocus="this.style.borderColor='var(--cielo)'" onblur="this.style.borderColor='var(--cobre)'"/>
+            </div>
+            <div>
+              <label class="block text-carbon font-600 text-sm mb-1.5">WhatsApp o correo *</label>
+              <input id="field-contact" type="text" placeholder="Ej: 300 123 4567"
+                     class="w-full rounded-xl px-4 py-3 text-carbon placeholder-carbon/30 focus:outline-none transition-colors text-sm"
+                     style="border: 2px solid var(--cobre); background: white;" onfocus="this.style.borderColor='var(--cielo)'" onblur="this.style.borderColor='var(--cobre)'"/>
+            </div>
+          </div>
+          <p id="contact-error" class="text-red-500 text-sm mt-3 hidden">Por favor llena todos los campos.</p>
+          <div class="flex gap-3 mt-5">
+            <button onclick="goStep(1)" class="flex-1 rounded-2xl py-4 font-600 text-carbon/60 transition-colors" style="background: var(--arena);">← Atrás</button>
+            <button onclick="goStep(3)" class="flex-[2] rounded-2xl py-4 font-700 text-carbon text-lg transition-colors" style="background: var(--cielo);">Siguiente →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step" id="step-3">
+          <h3 class="font-serif font-600 text-carbon text-xl mb-2">¿Qué estilo te gusta más?</h3>
+          <p class="text-carbon/50 text-sm mb-5">Solo es una preferencia — la ajustamos después si quieres.</p>
+          <div class="space-y-2.5">
+            <div class="tpl-option">
+              <input type="radio" name="template" id="tpl-vitrina" value="Vitrina" />
+              <label for="tpl-vitrina">
+                <div class="flex items-center gap-4 p-4 bg-crema">
+                  <div class="w-11 h-11 rounded-xl shrink-0 flex items-center justify-center text-xl" style="background: linear-gradient(135deg,#f5f0e8,#e8e0d0);">🌿</div>
+                  <div><p class="font-serif font-600 text-carbon text-sm">Vitrina</p><p class="text-carbon/45 text-xs">Limpio y moderno</p></div>
+                </div>
+              </label>
+            </div>
+            <div class="tpl-option">
+              <input type="radio" name="template" id="tpl-raices" value="Raíces" />
+              <label for="tpl-raices">
+                <div class="flex items-center gap-4 p-4 bg-crema">
+                  <div class="w-11 h-11 rounded-xl shrink-0 flex items-center justify-center text-xl" style="background: linear-gradient(135deg,#92400e,#b45309);">🌱</div>
+                  <div><p class="font-serif font-600 text-carbon text-sm">Raíces</p><p class="text-carbon/45 text-xs">Cálido y orgánico</p></div>
+                </div>
+              </label>
+            </div>
+            <div class="tpl-option">
+              <input type="radio" name="template" id="tpl-estrella" value="Estrella" />
+              <label for="tpl-estrella">
+                <div class="flex items-center gap-4 p-4 bg-crema">
+                  <div class="w-11 h-11 rounded-xl shrink-0 flex items-center justify-center text-xl" style="background: linear-gradient(135deg,#f97316,#f59e0b);">⭐</div>
+                  <div><p class="font-serif font-600 text-carbon text-sm">Estrella</p><p class="text-carbon/45 text-xs">Bold y vibrante</p></div>
+                </div>
+              </label>
+            </div>
+            <div class="tpl-option">
+              <input type="radio" name="template" id="tpl-otro" value="Otro" onchange="toggleCustomStyle()" />
+              <label for="tpl-otro">
+                <div class="flex items-center gap-4 p-4 bg-crema">
+                  <div class="w-11 h-11 rounded-xl shrink-0 flex items-center justify-center text-xl" style="background: rgba(124,207,248,.2);">✏️</div>
+                  <div><p class="font-serif font-600 text-carbon text-sm">Otro — descríbelo tú</p><p class="text-carbon/45 text-xs">Cuéntanos el estilo que te gusta</p></div>
+                </div>
+              </label>
+            </div>
+            <div id="custom-style-box" class="hidden pt-1">
+              <textarea id="field-custom-style" rows="3"
+                placeholder="Ej: Me gustan los colores verdes y beige, algo natural, con fotos grandes..."
+                class="w-full rounded-xl px-4 py-3 text-carbon text-sm placeholder-carbon/30 resize-none focus:outline-none"
+                style="border: 2px solid var(--cielo); background: white;"></textarea>
+            </div>
+          </div>
+          <p id="tpl-error" class="text-red-500 text-sm mt-3 hidden">Selecciona un estilo para continuar.</p>
+          <div class="flex gap-3 mt-5">
+            <button onclick="goStep(2)" class="flex-1 rounded-2xl py-4 font-600 text-carbon/60 transition-colors" style="background: var(--arena);">← Atrás</button>
+            <button onclick="submitForm()" class="flex-[2] rounded-2xl py-4 font-700 text-carbon text-lg transition-colors" style="background: var(--cielo);">Enviar 🐾</button>
+          </div>
+        </div>
+
+        <!-- DONE -->
+        <div class="step text-center" id="step-done">
+          <div class="py-6">
+            <p class="text-6xl mb-4">🎉</p>
+            <h3 class="font-serif font-700 text-carbon text-2xl mb-3">¡Listo, <span id="confirm-name">amig@</span>!</h3>
+            <p class="text-carbon/65 text-lg mb-2">Te contactamos en <strong>menos de 2 horas</strong> por WhatsApp.</p>
+            <p class="text-carbon/40 text-sm mb-8">Ten listos: logo, 3-5 fotos y tu lista de servicios con precios.</p>
+            <a id="confirm-whatsapp" href="#" target="_blank"
+               class="inline-block text-carbon font-700 px-6 py-3 rounded-full text-sm transition-colors" style="background: var(--cielo);">
+              ¿Tienes prisa? Escríbenos directo →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center text-white/35 text-sm mt-5">
+        ¿Prefieres WhatsApp?
+        <a href="https://wa.me/TODO_REPLACE_WHATSAPP?text=Hola!%20Quiero%20una%20p%C3%A1gina%20web%20para%20mi%20negocio%20de%20mascotas"
+           target="_blank" class="underline hover:text-white transition-colors" style="color: var(--cielo);">
+          Escríbenos aquí →
+        </a>
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════ FAQ ══ -->
+  <section class="py-20 px-5" style="background: var(--crema);">
+    <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-12 reveal">
+        <h2 class="font-serif font-700 text-carbon" style="font-size: clamp(1.8rem, 4vw, 2.6rem);">Preguntas frecuentes</h2>
+      </div>
+      <div class="space-y-3">
+        <details class="group bg-arena rounded-2xl border border-cobre/25 overflow-hidden reveal">
+          <summary class="flex justify-between items-center p-5"><span class="font-serif font-600 text-carbon">¿Qué es Hachi y para qué me sirve?</span><span class="faq-arrow text-cobre">↓</span></summary>
+          <div class="px-5 pb-5 text-carbon/60 leading-relaxed">Hachi es una app gratuita donde tus clientes pueden agendar citas contigo en línea — sin llamadas ni mensajes para coordinar. Tu página tiene un botón "Agendar cita" que los lleva directo a tu calendario. Como tener una recepcionista digital, gratis.</div>
+        </details>
+        <details class="group bg-arena rounded-2xl border border-cobre/25 overflow-hidden reveal reveal-delay-1">
+          <summary class="flex justify-between items-center p-5"><span class="font-serif font-600 text-carbon">¿Qué necesito para empezar?</span><span class="faq-arrow text-cobre">↓</span></summary>
+          <div class="px-5 pb-5 text-carbon/60 leading-relaxed">Solo tres cosas: tu logo (o el nombre del negocio), 3-5 fotos de tu negocio o trabajos, y tu lista de servicios con precios. Lo demás lo hacemos nosotros.</div>
+        </details>
+        <details class="group bg-arena rounded-2xl border border-cobre/25 overflow-hidden reveal reveal-delay-2">
+          <summary class="flex justify-between items-center p-5"><span class="font-serif font-600 text-carbon">¿Puedo usar mi propio dominio?</span><span class="faq-arrow text-cobre">↓</span></summary>
+          <div class="px-5 pb-5 text-carbon/60 leading-relaxed">Sí. Si tienes un dominio, lo conectamos sin costo adicional. Si no tienes, te damos una dirección en nuestro sistema desde el primer día.</div>
+        </details>
+        <details class="group bg-arena rounded-2xl border border-cobre/25 overflow-hidden reveal reveal-delay-3">
+          <summary class="flex justify-between items-center p-5"><span class="font-serif font-600 text-carbon">¿Qué pasa si quiero cancelar?</span><span class="faq-arrow text-cobre">↓</span></summary>
+          <div class="px-5 pb-5 text-carbon/60 leading-relaxed">Cancelas cuando quieras, sin penalidades. Tu web se pausa. No hay contratos. Pero con $25.000 al mes — menos que un almuerzo — nadie cancela.</div>
+        </details>
+        <details class="group bg-arena rounded-2xl border border-cobre/25 overflow-hidden reveal">
+          <summary class="flex justify-between items-center p-5"><span class="font-serif font-600 text-carbon">¿Es solo para veterinarias?</span><span class="faq-arrow text-cobre">↓</span></summary>
+          <div class="px-5 pb-5 text-carbon/60 leading-relaxed">No. Para cualquier negocio de mascotas: groomers, guarderías, hoteles, entrenadores, tiendas, pet sitters, fotógrafos, spas, fundaciones y más.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════ FINAL CTA ══ -->
+  <section class="py-28 px-5" style="background: var(--arena);">
+    <div class="max-w-xl mx-auto text-center reveal">
+      <!-- Animated Hachi logo large -->
+      <div class="flex justify-center mb-6">
+        <svg viewBox="0 0 56 58" width="72" height="72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15" y="2" width="6" height="14" rx="3" fill="#1C2235"/>
+          <rect x="35" y="2" width="6" height="14" rx="3" fill="#1C2235"/>
+          <rect x="3" y="10" width="50" height="46" rx="9" fill="#1C2235"/>
+          <rect x="3" y="10" width="50" height="18" rx="9" fill="#1C2235"/>
+          <rect x="3" y="20" width="50" height="8" fill="#1C2235"/>
+          <ellipse cx="28" cy="42" rx="10" ry="9" fill="#FAF7EF" opacity=".9"/>
+          <circle class="toe-1" cx="15.5" cy="30" r="4.5" fill="#7CCFF8"/>
+          <circle class="toe-2" cx="23"   cy="26" r="4"   fill="#7CCFF8"/>
+          <circle class="toe-3" cx="33"   cy="26" r="4"   fill="#7CCFF8"/>
+          <circle class="toe-4" cx="40.5" cy="30" r="4.5" fill="#7CCFF8"/>
+        </svg>
+      </div>
+
+      <p class="font-serif italic text-carbon/50 text-lg mb-4">"Pets are the new kids."</p>
+      <h2 class="font-serif font-700 text-carbon leading-tight mb-4" style="font-size: clamp(1.8rem, 4vw, 2.8rem);">
+        ¿Listo para que tu negocio<br />se vea como lo que es?
+      </h2>
+      <p class="text-carbon/55 text-lg mb-8">
+        Setup $500.000 COP · Mantenimiento $25.000/mes · 48 horas garantizado
+      </p>
+      <a href="#empieza"
+         class="cta-pulse inline-block font-700 text-carbon text-xl px-12 py-5 rounded-2xl transition-colors shadow-sm"
+         style="background: var(--cielo);">
+        Empezar ahora 🐾
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════ FOOTER ══ -->
+  <footer style="background: var(--carbon);" class="py-8 px-5 border-t border-white/5">
+    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+      <div class="flex items-center gap-2">
+        <svg viewBox="0 0 56 58" width="28" height="28" fill="none">
+          <rect x="15" y="2" width="6" height="14" rx="3" fill="#7CCFF8"/>
+          <rect x="35" y="2" width="6" height="14" rx="3" fill="#7CCFF8"/>
+          <rect x="3" y="10" width="50" height="46" rx="9" fill="#7CCFF8"/>
+          <rect x="3" y="10" width="50" height="18" rx="9" fill="#7CCFF8"/>
+          <rect x="3" y="20" width="50" height="8" fill="#7CCFF8"/>
+          <ellipse cx="28" cy="42" rx="10" ry="9" fill="#1C2235" opacity=".9"/>
+          <circle cx="15.5" cy="30" r="4.5" fill="#1C2235"/>
+          <circle cx="23"   cy="26" r="4"   fill="#1C2235"/>
+          <circle cx="33"   cy="26" r="4"   fill="#1C2235"/>
+          <circle cx="40.5" cy="30" r="4.5" fill="#1C2235"/>
+        </svg>
+        <span class="font-serif font-700 text-white">hachi studio</span>
+        <span class="text-white/30 text-sm">· by Zeal Humans</span>
+      </div>
+      <span class="text-white/30 text-sm">studio.hachi.pet · © 2026 Zeal Humans LLC · Bogotá, Colombia</span>
+    </div>
+  </footer>
+
+
+  <!-- ══════════════════════════════════ SCRIPTS ══ -->
+  <script>
+    // ── Rotating business type in hero ──────────────
+    const bizTypes = ['grooming', 'clínica veterinaria', 'guardería', 'tienda de mascotas', 'fotografía', 'adiestramiento'];
+    let bizIndex = 0;
+    const bizContainer = document.getElementById('biz-rotate');
+
+    function renderBizType() {
+      const span = document.createElement('span');
+      span.className = 'biz-slot active font-serif font-700';
+      span.style.cssText = 'color:#7CCFF8; font-style:italic;';
+      span.textContent = bizTypes[bizIndex];
+      bizContainer.innerHTML = '';
+      bizContainer.appendChild(span);
+    }
+    renderBizType();
+    setInterval(() => {
+      bizIndex = (bizIndex + 1) % bizTypes.length;
+      renderBizType();
+    }, 2200);
+
+    // ── Scroll reveal ────────────────────────────────
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+
+    // ── Form state ───────────────────────────────────
+    let formData = { biz_type:'', name:'', city:'', owner:'', contact:'', template:'', custom_style:'' };
+    const stepConfig = {
+      1: { label:'Paso 1 de 3', pct:'33%',  width:'33%'  },
+      2: { label:'Paso 2 de 3', pct:'66%',  width:'66%'  },
+      3: { label:'Paso 3 de 3', pct:'100%', width:'100%' },
+    };
+
+    function showStep(n) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById(n === 'done' ? 'step-done' : `step-${n}`).classList.add('active');
+      if (stepConfig[n]) {
+        document.getElementById('step-label').textContent = stepConfig[n].label;
+        document.getElementById('step-pct').textContent   = stepConfig[n].pct;
+        document.getElementById('progress-bar').style.width = stepConfig[n].width;
+      }
+    }
+
+    function goStep(n) {
+      if (n === 2) {
+        const biz = document.querySelector('input[name="biz_type"]:checked');
+        if (!biz) { document.getElementById('biz-error').classList.remove('hidden'); return; }
+        document.getElementById('biz-error').classList.add('hidden');
+        formData.biz_type = biz.value;
+      }
+      if (n === 3) {
+        const name    = document.getElementById('field-name').value.trim();
+        const city    = document.getElementById('field-city').value.trim();
+        const owner   = document.getElementById('field-owner').value.trim();
+        const contact = document.getElementById('field-contact').value.trim();
+        if (!name || !city || !owner || !contact) { document.getElementById('contact-error').classList.remove('hidden'); return; }
+        document.getElementById('contact-error').classList.add('hidden');
+        Object.assign(formData, { name, city, owner, contact });
+      }
+      showStep(n);
+      document.getElementById('empieza').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    function toggleCustomStyle() {
+      document.getElementById('custom-style-box').classList.toggle('hidden', !document.getElementById('tpl-otro').checked);
+    }
+    document.querySelectorAll('input[name="template"]').forEach(r => {
+      if (r.id !== 'tpl-otro') r.addEventListener('change', () => document.getElementById('custom-style-box').classList.add('hidden'));
+    });
+
+    function submitForm() {
+      const tpl = document.querySelector('input[name="template"]:checked');
+      if (!tpl) { document.getElementById('tpl-error').classList.remove('hidden'); return; }
+      document.getElementById('tpl-error').classList.add('hidden');
+      formData.template     = tpl.value;
+      formData.custom_style = tpl.value === 'Otro' ? document.getElementById('field-custom-style').value.trim() : '';
+
+      document.getElementById('confirm-name').textContent = formData.owner.split(' ')[0] || 'amig@';
+
+      const styleNote = formData.custom_style ? `\n✏️ Descripción: ${formData.custom_style}` : '';
+      const msg = encodeURIComponent(
+        `Hola! Acabo de llenar el formulario de Hachi Studio 🐾\n\n` +
+        `📋 Negocio: ${formData.name}\n🏢 Tipo: ${formData.biz_type}\n` +
+        `📍 Ciudad: ${formData.city}\n👤 Nombre: ${formData.owner}\n` +
+        `🎨 Estilo: ${formData.template}${styleNote}\n📞 Contacto: ${formData.contact}`
+      );
+      document.getElementById('confirm-whatsapp').href = `https://wa.me/TODO_REPLACE_WHATSAPP?text=${msg}`;
+
+      showStep('done');
+      document.getElementById('empieza').scrollIntoView({ behavior:'smooth', block:'start' });
+      // TODO: fetch('https://formspree.io/f/TODO_FORM_ID', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(formData) });
+    }
+  </script>
+
+</body>
+</html>
